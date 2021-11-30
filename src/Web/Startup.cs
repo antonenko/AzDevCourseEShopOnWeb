@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.eShopWeb.ApplicationCore;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using Microsoft.eShopWeb.ApplicationCore.Services;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web.Configuration;
@@ -95,8 +97,15 @@ namespace Microsoft.eShopWeb.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCookieSettings();
+            services.Configure<ServiceBusSettings>(Configuration.GetSection(nameof(ServiceBusSettings)));
+            services.Configure<DeliveryOrderSettings>(Configuration.GetSection(nameof(DeliveryOrderSettings)));
 
+            services.AddScoped<IDeliveryOrderService, DeliveryOrderService>();
+            services.AddScoped<IOrderReserverService, OrderReserverService>();
+            services.AddScoped<IServiceBusSenderService, ServiceBusSenderService>();
+            services.AddHttpClient();
+
+            services.AddCookieSettings();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
