@@ -2,6 +2,7 @@
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,9 @@ namespace Microsoft.eShopWeb.ApplicationCore.Services
 
         public async Task Send(DeliveryOrderDetails order)
         {
-            var json = JsonConvert.SerializeObject(order);
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            var json = JsonConvert.SerializeObject(order, serializerSettings);
 
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
