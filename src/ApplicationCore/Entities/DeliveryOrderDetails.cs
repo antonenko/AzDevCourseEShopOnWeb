@@ -7,14 +7,17 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities
 {
     public class DeliveryOrderDetails
     {
-        public DeliveryOrderDetails(int id, IReadOnlyCollection<OrderItem> items, Address address)
+        public DeliveryOrderDetails(int basketId, IReadOnlyCollection<OrderItem> items, Address address)
         {
-            Id = id;
+            Id = Guid.NewGuid();
+            BasketId = basketId;
             Items = items;
             Address = address;
             Price = CalculateFinalPrice();
         }
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        
+        public int BasketId { get; set; }
 
         public IReadOnlyCollection<OrderItem> Items { get; set; }
 
